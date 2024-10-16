@@ -2,7 +2,7 @@
 
 **[Adwait Sharma](https://www.adwaitsharma.com/)**, **[Christina Salchow-Hömmen](https://orcid.org/0000-0001-5527-9895)**, **[Vimal Suresh Mollyn](https://vimal-mollyn.com/)**, **[Aditya Shekhar Nittala](https://orcid.org/0000-0002-3698-9733)**, **[Michael A. Hedderich](https://www.michael-hedderich.de/)**, **[Marion Koelle](https://marionkoelle.de/)**, **[Thomas Seel](https://orcid.org/0000-0002-6920-1690)**, **[Jürgen Steimle](https://hci.cs.uni-saarland.de/people/juergen-steimle/)**
 
-![SparseIMU Teaser Image](https://github.com/HCI-Lab-Saarland/sparseimu/blob/master/media/SparseIMU_teaser.png?raw=true)
+![SparseIMU Teaser Image](https://github.com/HCI-Lab-Saarland/SparseIMU/blob/main/media/SparseIMU_teaser.png)
 
 ### Abstract
 Gestural interaction with freehands and while grasping an everyday object enables always-available input. To sense such gestures, minimal instrumentation of the user’s hand is desirable. However, the choice of an effective but minimal IMU layout remains challenging, due to the complexity of the multi-factorial space that comprises diverse finger gestures, objects, and grasps. We present SparseIMU, a rapid method for selecting minimal inertial sensor-based layouts for effective gesture recognition. Furthermore, we contribute a computational tool to guide designers with optimal sensor placement. Our approach builds on an extensive microgestures dataset that we collected with a dense network of 17 inertial measurement units (IMUs). We performed a series of analyses, including an evaluation of the entire combinatorial space for freehand and grasping microgestures (393 K layouts), and quantified the performance across different layout choices, revealing new gesture detection opportunities with IMUs. Finally, we demonstrate the versatility of our method with four scenarios.
@@ -13,7 +13,7 @@ Gestural interaction with freehands and while grasping an everyday object enable
 
 ## Computational Design Tool for Rapid Selection of Custom Sparse Layouts
 
-![SparseIMU Tool](https://github.com/HCI-Lab-Saarland/sparseimu/blob/master/media/SparseIMU_tool.gif?raw=true)
+![SparseIMU Tool](https://github.com/HCI-Lab-Saarland/SparseIMU/blob/main/media/SparseIMU_tool.gif)
 
 ---
 
@@ -47,7 +47,7 @@ python sparseimu/tool.py
 
 ## Raw dataset
 
-Download the raw dataset [here](https://hci.cs.uni-saarland.de/projects/sparseimu/) (approx. 9GB).
+Download the raw dataset [here](https://hci.cs.uni-saarland.de/wp-content/uploads/projects/micro-gestural-input/sparseimu/SparseIMU_fulldataset.zip) (approx. 9GB).
 
 ---
 
