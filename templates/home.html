@@ -1,0 +1,501 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="m-3 justify-content-center">
+  <!-- form method='POST' action='/after_action' -->
+  <form action="">
+    <div class="row justify-content-center">
+      <div class="col-lg-3 text-center" id="actions-form">
+        <div class="row justify-content-center">
+          <h4>Select Freehand and/or Grasp</h4>
+        </div>
+        <div class="row justify-content-center">
+          <select multiple class="action-multiselect" data-enableuseroption="true" data-selected-text-format="count" data-actions-box=true data-size=6>
+          {% for grasp in html_data['Action_w_grasps'].keys() %}
+          <optgroup label="{{ grasp }}">
+            {% for action in html_data['Action_w_grasps'][grasp]['id'] %}
+            <!--option id="{{ action }}">{{ action.split("_")[1]}} ({{ action.split("_")[0].strip() }})</option-->
+            <option id="{{ action }}">{{ html_data['Action_w_grasps'][grasp]['value'][loop.index0] }}</option>
+            {% endfor %}
+          </optgroup>
+          {% endfor %}
+          </select>
+        </div>
+        <div class="row p-3 justify-content-center">
+          {% for grasp in html_data['Action_w_grasps'].keys() %}
+          {% for action in html_data['Action_w_grasps'][grasp]['id'] %}
+          <span class="badge badge-pill badge-secondary m-1 d-none" id="{{ action }}-badge">{{ grasp }} - {{ html_data['Action_w_grasps'][grasp]['value'][loop.index0] }}</span>
+          {% endfor %}
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="col-lg-3 text-justify" id="gestures-form">
+        <h4>Select Gestures</h4>
+        <div class="row text-justify">
+          <div class="col-5">
+            <div class="form-check form-check-inline">
+              <label class="form-check-label text-center">
+
+              </label>
+            </div>
+          </div>
+          <div class="col">
+            {% for finger in html_data['Fingers'] %}
+            <div class="form-check form-check-inline mx-2" id="Finger_Label">
+              <label class="form-check-label text-center">
+                {{ finger }}
+              </label>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+        {% for gesture in html_data['Gestures'] %}
+        {% if gesture != "Static" %}
+        <div class="row text-justify" name="gesture-rows">
+          <div class="col">
+            <div class="form-check form-check-inline" id="{{ gesture }}">
+              <input class="form-check-input" type="checkbox" value="{{ gesture }}" name="gestures" id="gesture" unchecked>
+              <label class="form-check-label text-center" for="gesture">
+                {{ gesture }}
+              </label>
+            </div>
+          </div>
+          <div class="col">
+            {% for finger in html_data['Fingers'] %}
+              <div class="form-check form-check-inline d-none mx-3" id="{{ gesture }}_{{ finger }}">
+                <input class="form-check-input" type="checkbox" value="{{ gesture }}_{{ finger }}" name="gestures_fingers" id="gesture_finger" unchecked>
+                <label class="form-check-label text-center" for="gesture_finger">
+                </label>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+        {% endif %}
+        {% endfor %}
+        <div class="row">
+          <div class="col">
+            <div class="form-check form-check-inline d-none" id="Static_Static">
+              <input class="form-check-input" type="checkbox" value="Static_Static" name="gestures_fingers" id="gesture_finger" checked>
+              <label class="form-check-label text-center" for="gesture_finger">
+                Static
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-4 text-justify px-5" id="imus-form">
+        <h4>Preference for Sensor placement</h4>
+        <div class="row text-justify">
+          <div class="col-4" style="width: 40%; flex: 0 0 40%;max-width: 40%;">
+            <div class="form-check form-check-inline">
+              <label class="form-check-label text-center">
+
+              </label>
+            </div>
+          </div>
+          <div class="col">
+            {% for joint in html_data['joint_names'] %}
+              <div class="form-check form-check-inline mx-1">
+                <label class="form-check-label text-center">
+                  {{ joint.capitalize() }}
+                </label>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+        {% for finger in html_data['imu_fingers'] %}
+        {% if (finger != "handback" and finger != "forearm") %}
+        <div class="row text-justify" name="finger-rows">
+          <div class="col-4" style="width: 40%; flex: 0 0 40%;max-width: 40%;">
+            <div class="form-check form-check-inline" id="{{ finger }}">
+              <input class="form-check-input" type="checkbox" value="{{ finger }}" name="fingers" id="finger" unchecked>
+              <label class="form-check-label text-center" for="finger">
+                {{ html_data['imu_fingers_names'][finger] }}
+              </label>
+            </div>
+          </div>
+          <div class="col">
+            {% for joint in html_data['joints'] %}
+              <div class="form-check form-check-inline mx-4" id="{{ finger }}_{{ joint }}">
+                <input class="form-check-input" type="checkbox" value="{{ finger }}_{{ joint }}" name="imus" id="imu" unchecked>
+                <!--label class="form-check-label text-center mx-2" for="imu">
+                  {{ joint[0].upper() }}
+                </label-->
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+        {% else %}
+        <div class="row text-justify">
+          <div class="col">
+            <div class="form-check form-check-inline" id="{{ finger }}">
+              <input class="form-check-input" type="checkbox" value="{{ finger }}" name="imus" id="imu" unchecked>
+              <label class="form-check-label text-center" for="imu">
+                {{ html_data['imu_fingers_names'][finger] }}
+              </label>
+            </div>
+          </div>
+        </div>
+        {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+
+
+    <div class="row justify-content-center m-4">
+      <label for="amountRange" class="form-label mx-3"><b>Number of IMUs</b></label>
+      <input id="imu-count" class="form-range mx-3" type="range" name="amountRange" min="1" max="17" value="1" oninput="this.form.amountInput.value=this.value">
+      <input type="number" class="text-center mx-3" name="amountInput" min="1" max="17" value="1" oninput="this.form.amountRange.value=this.value">
+    </div>
+
+    <div class="row pt-3 justify-content-center">
+      <input class="btn btn-primary mx-3" type="button" id="get_fi" value="Generate Minimal Layout" disabled>
+      <input class="btn btn-primary mx-3 d-none" type="button" id="download-cm" value="Download CM">
+    </div>
+  </form>
+</div>
+
+<div class="row justify-content-center p-1">
+    <!--h3 class="text-center">Confusion Matrix</h3-->
+    <!--div class="row">
+      <div class="col text-center" id="accuracy-text"></div>
+    </div-->
+  <div class="col-lg-4 align-items-center" id="confusion-matrix"></div>
+  <div class="col-lg-4 text-center">
+    <svg id="drawing" height="500px" class="m-3 d-none" width="500px" viewBox="0 0 500 500">
+      <text x="53%" y="20" text-anchor="middle" style="font-size: 24px;"> Sparse IMU Layout </text>
+    </svg>
+    <div class="row">
+      <div class="col text-center m-1 d-none" id="best-imus"></div>
+    </div>
+  </div>
+</div>
+
+<div class="d-flex p-3 justify-content-center">
+  <canvas id="chart-canvas"></canvas>
+  <div
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+  // svg hand stuff
+  var hand_canvas = Snap("#drawing");
+  var status_area = Snap.load("{{url_for('static', filename='hand-image.svg')}}", function ( loadedFragment ){
+      hand_canvas.append( loadedFragment );
+  });
+  var title = Snap.parse('<h1>This is a title</h1>');
+  hand_canvas.append(title);
+
+  let r = 9;
+  let width = 500;
+  let height = 500;
+  
+  let x_ratio = width/500;
+  let y_ratio = height/500;
+  let fill_color = "#94CB65";
+  let opacity_val = 0;
+
+  //To not display a specific imu, just set the opacity to 0.
+  //Currently we show IMUs as circles but they can also be rendered as rectangles.
+  // Just replace circle with rect.. See Snap SVG library documentation
+  var F1_dist = hand_canvas.circle(115*x_ratio, 242*y_ratio, r).attr({id:"F1_dist", fill:fill_color, opacity:opacity_val});
+  var F1_midd = hand_canvas.circle(155*x_ratio, 278*y_ratio, r).attr({id:"F1_midd", fill:fill_color, opacity:opacity_val});
+  var F1_prox = hand_canvas.circle(188*x_ratio, 320*y_ratio, r).attr({id:"F1_prox", fill:fill_color, opacity:opacity_val});
+
+  var F2_dist = hand_canvas.circle(189*x_ratio, 95*y_ratio, r).attr({id:"F2_dist", fill:fill_color, opacity:opacity_val});
+  var F2_midd = hand_canvas.circle(199*x_ratio, 135*y_ratio, r).attr({id:"F2_midd", fill:fill_color, opacity:opacity_val});
+  var F2_prox = hand_canvas.circle(212*x_ratio, 180*y_ratio, r).attr({id:"F2_prox", fill:fill_color, opacity:opacity_val});
+
+  var F3_dist = hand_canvas.circle(263*x_ratio, 58*y_ratio, r).attr({id:"F3_dist", fill:fill_color, opacity:opacity_val});
+  var F3_midd = hand_canvas.circle(263*x_ratio, 110*y_ratio, r).attr({id:"F3_midd", fill:fill_color, opacity:opacity_val});
+  var F3_prox = hand_canvas.circle(263*x_ratio, 170*y_ratio, r).attr({id:"F3_prox", fill:fill_color, opacity:opacity_val});
+
+  var F4_dist = hand_canvas.circle(327*x_ratio, 90*y_ratio, r).attr({id:"F4_dist", fill:fill_color, opacity:opacity_val});
+  var F4_midd = hand_canvas.circle(319*x_ratio, 140*y_ratio, r).attr({id:"F4_midd", fill:fill_color, opacity:opacity_val});
+  var F4_prox = hand_canvas.circle(310*x_ratio, 187*y_ratio, r).attr({id:"F4_prox", fill:fill_color, opacity:opacity_val});
+
+  var F5_dist = hand_canvas.circle(389*x_ratio, 160*y_ratio, r).attr({id:"F5_dist", fill:fill_color, opacity:opacity_val});
+  var F5_midd = hand_canvas.circle(373*x_ratio, 188*y_ratio, r).attr({id:"F5_midd", fill:fill_color, opacity:opacity_val});
+  var F5_prox = hand_canvas.circle(350*x_ratio, 220*y_ratio, r).attr({id:"F5_prox", fill:fill_color, opacity:opacity_val});
+
+  var handback = hand_canvas.circle(270*x_ratio, 290*y_ratio, r).attr({id:"handback", fill:fill_color, opacity:opacity_val});
+  var forearm = hand_canvas.circle(270*x_ratio, 420*y_ratio, r).attr({id:"forearm", fill:fill_color, opacity:opacity_val});
+
+  // helper functions
+  function get_actions_set(){
+    let actions_set = []
+    $(".action-multiselect").find("option").each(function(){
+      if($(this).is(":selected")){
+        actions_set.push($(this).attr("id"));
+      }
+    })
+
+    // return actions_set_curr;
+    return actions_set;
+  }
+
+  function get_gestures_set(){
+    let gestures_set = []
+    document.getElementById("gestures-form").querySelectorAll("#gesture_finger").forEach((data) => {
+      if(data.checked){
+        // console.log(data.value)
+        gestures_set.push(data.value)
+      }
+    })
+    return gestures_set;
+  }
+
+  function get_imus_set(){
+    let imus_set = []
+    document.getElementById("imus-form").querySelectorAll("#imu").forEach((data) => {
+      if(data.checked){
+        // console.log(data.value)
+        imus_set.push(data.value)
+      }
+    })
+    return imus_set;
+  }
+
+  function get_imu_count(){
+    let imu_count = document.getElementById("imu-count").value;
+
+    return imu_count;
+  }
+
+  function downloadCM(){
+    // send POST request to the flask server
+    fetch(`${window.origin}/download_cm`, {
+        method: "POST",
+        body: JSON.stringify({
+          message: "Sending actions, gestures and imus - I WANT to download a CM!",
+          actions: get_actions_set(),
+          gestures: get_gestures_set(),
+          imus: get_imus_set(),
+          imu_count: get_imu_count()
+        }),
+        headers: new Headers({
+          "content-type": "application/json"
+        })
+      })
+      .then((res) => {
+        res.json().then((msg) => {
+          console.log(msg)
+        })
+    })
+  }
+
+  function updateCM(){
+    // send GET request to the flask server
+    fetch(`${window.origin}/get_cm`, {
+        method: "POST",
+        body: JSON.stringify({
+          message: "Sending actions, gestures and imus - I WANT a CM!",
+          actions: get_actions_set(),
+          gestures: get_gestures_set(),
+          imus: get_imus_set(),
+          imu_count: get_imu_count()
+        }),
+        headers: new Headers({
+          "content-type": "application/json"
+        })
+      })
+      .then((res) => {
+        res.json().then((fi_data) => {
+          if(fi_data.message == "Message received, here is your CM!"){
+            // console.log(fi_data);
+            // document.getElementById("confusion-matrix").src = fi_data.cm;
+            let cm = fi_data.cm;
+            let acc = fi_data.accuracy;
+            let f1 = fi_data.f1;
+            let best_imus = fi_data.best_imus;
+            document.getElementById("confusion-matrix").innerHTML = `<figure><img class="img-fluid pt-2" style="width: 140%" src="${cm}"></figure>`
+            document.getElementById("best-imus").innerHTML = `${best_imus}`
+            // document.getElementById("accuracy-text").innerHTML = `<b class="text-center">Estimated Accuracy: </i>${acc.toFixed(3)}</i></b>`
+
+            // console.log(best_imus);
+            updateSVG(best_imus);
+
+            // show the svg
+            document.getElementById("drawing").classList.remove("d-none");
+
+        } else {
+          console.log(fi_data.message);
+        }
+
+      })
+    })
+  }
+
+  // update the svg with correct features
+  function updateSVG(best_imus){
+    let imus = ["F1_prox", "F1_midd", "F1_dist", 
+                "F2_prox", "F2_midd", "F2_dist",
+                "F3_prox", "F3_midd", "F3_dist",
+                "F4_prox", "F4_midd", "F4_dist",
+                "F5_prox", "F5_midd", "F5_dist",
+                "handback", "forearm"]
+    // change the opacity of all circles to 0
+    for (let imu of imus){
+      hand_canvas.select(`#${imu}`).attr({opacity: 0});
+    }
+
+    // change the opacity of the best imus to 0.75
+    for (let imu of best_imus){
+      hand_canvas.select(`#${imu}`).attr({opacity: 0.95});
+    }
+    
+  }
+
+  // check for onClick event for download button
+document.getElementById("download-cm").addEventListener('click', (data) => {
+    console.log("Downloading the CM")
+    downloadCM();
+  })
+
+  // check for onClick event for submit button
+  document.getElementById("get_fi").addEventListener('click', (data) => {
+  //   console.log("Getting Feature importances");
+
+    // updating the CM takes longer
+    updateCM();
+  })
+
+  // multiselect stuff
+  $(document).ready(function() {
+
+  $('.action-multiselect[data-enableuseroption="true"]').each(function(e) {
+
+      var $sel = $(this).selectpicker({
+        header: 'Select Freehand/Grasp',
+        liveSearch: true
+      });
+
+      // look for changes in multiselect
+      $sel.on('change', function(e) {
+        // console.log($(this).val());
+
+        // add d-none class back to all gestures, and uncheck all of them
+        document.getElementById("gestures-form").querySelectorAll(".form-check").forEach((ele) => {
+          if(ele.id != "Finger_Label" && ele.id != "Static_Static"){
+            ele.classList.add("d-none");
+            ele.children[0].checked = false;
+            ele.children[0].disabled = true;
+          }
+        })
+
+        // toggle d-none for this action
+        document.querySelectorAll(".badge").forEach((ele) => {
+          ele.classList.add("d-none");
+        })
+
+        // show only the selected actions-badges
+        for (let action of get_actions_set()){
+          document.getElementById(`${action}-badge`).classList.toggle("d-none");
+        }
+
+        actions_set = get_actions_set();
+
+        
+        // send a POST request to the flask server and get a list of gestures back
+        fetch(`${window.origin}/get_gestures`, {
+            method: "POST",
+            body: JSON.stringify({
+              message: "Sending the set of Actions",
+              actions: actions_set
+            }),
+            headers: new Headers({
+              "content-type": "application/json"
+            })
+          })
+          .then((res) => {
+            res.json().then((data) => {
+              // console.log(data)
+              // get the gestures
+              let finger_gestures_set = data.finger_gestures
+              finger_gestures_set.forEach((finger_gesture) => {
+                // unhide the gesture checkboxes
+                // console.log(finger_gesture.split("_"));
+                let gesture = finger_gesture.split("_")[0];
+                if (finger_gesture != "Static_Static"){
+                  document.getElementById(finger_gesture).classList.toggle("d-none");
+                  document.getElementById(finger_gesture).children[0].disabled = false;
+                  
+                  document.getElementById(gesture).classList.toggle("d-none");
+                  document.getElementById(gesture).children[0].disabled = false;                
+                }
+              })
+            })
+          })
+      });
+      
+    });
+  });
+
+  // look for changes in gesture_finger checkboxes
+  document.getElementsByName("gestures_fingers").forEach((curr_checkbox) => {
+    curr_checkbox.addEventListener('change', (data) => {
+      // console.log(`The ${data.target.value.trim()} button was pressed`)
+      // updateCM();
+      // check if the number of gestures > 2
+      if(get_gestures_set().length >= 2 && get_imus_set().length >= 1){
+        // enable the button
+        document.getElementById("get_fi").disabled = false;
+      } else {
+        // enable the button
+        document.getElementById("get_fi").disabled = true;
+      }
+    })
+  })
+
+  // look for changes in imu checkboxes
+  document.getElementsByName("imus").forEach((curr_checkbox) => {
+    curr_checkbox.addEventListener('change', (data) => {
+      // console.log(`The ${data.target.value.trim()} button was pressed`)
+      if(get_gestures_set().length >= 2 && get_imus_set().length >= 1){
+        // enable the button
+        document.getElementById("get_fi").disabled = false;
+      } else {
+        // enable the button
+        document.getElementById("get_fi").disabled = true;
+      }
+    })
+  })
+
+  // look for changes in gesture checkboxes
+  document.getElementsByName("gesture-rows").forEach((ele) => {
+    ele.children[0].querySelector("#gesture").addEventListener('change', (data) => {
+      // console.log(data)
+
+      // select all the checkboxes
+      ele.children[1].querySelectorAll("#gesture_finger").forEach((check) => {
+        if (check.disabled != true){
+          check.checked = ele.children[0].querySelector("#gesture").checked;
+        }
+      })
+    })
+  })
+
+  // look for changes in finger checkboxes
+  document.getElementsByName("finger-rows").forEach((ele) => {
+    ele.children[0].querySelector("#finger").addEventListener('change', (data) => {
+      // console.log(data)
+
+      // select all the checkboxes
+      ele.children[1].querySelectorAll("#imu").forEach((check) => {
+          check.checked = ele.children[0].querySelector("#finger").checked;
+      })
+
+      if(get_gestures_set().length >= 2 && get_imus_set().length >= 1){
+        // enable the button
+        document.getElementById("get_fi").disabled = false;
+      } else {
+        // enable the button
+        document.getElementById("get_fi").disabled = true;
+      }
+
+    })
+  })
+</script>
+{% endblock %}
